@@ -4,8 +4,9 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
-
   <ItemGroup>
+    <ProjectReference Include="..\CodingChallenge.Business\CodingChallenge.Business.csproj" />
+    <ProjectReference Include="..\CodingChallenge.Entity\CodingChallenge.Entity.csproj" />
   </ItemGroup>
 
 </Project>
