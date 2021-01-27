@@ -13,12 +13,12 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label asp-for="FirstName" class="control-label"></label>
+                        <label asp-for="FirstName"></label>
                         <input asp-for="FirstName" class="form-control" oninput="Calculation()" required />
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="LastName" class="control-label"></label>
+                        <label asp-for="LastName"></label>
                         <input asp-for="LastName" class="form-control" required />
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
@@ -67,7 +67,7 @@
                                 </div>
                             </div>
                             <div class="col-md-1">
-                                <button class="btn btn-sm btn-success" type="button" id="add">+</button>
+                                <button class="btn btn-sm btn-success" type="button" id="btnAddDependent">+</button>
                             </div>
                         </div>
                     </div>
@@ -77,17 +77,17 @@
         <div class="col-md-10 offset-1 mt-2">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Calculation Preview</span>
+                    <span class="card-title">Benefits Calculation</span>
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="payCheck" class="col-sm-3 col-form-label">Cost Per Paycheck:</label>
+                        <label for="perPayCheck" class="col-sm-3 col-form-label">Cost Per Paycheck:</label>
                         <div class="col-sm-9">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">$</span>
                                 </div>
-                                <input type="text" readonly class="form-control" id="payCheck" value="0">
+                                <input type="text" readonly class="form-control" id="perPayCheck" value="0">
                             </div>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                     <div class="form-group row">
                         <div class="col-sm-12" id="discountInfo">
                             <div class="alert alert-info text-center">
-                                10% discount applied to
+                                10% discount has been applied to
                                 <span class="font-weight-bold" id="discountMembers">0</span> of
                                 <span class="font-weight-bold" id="totalMembers">0</span> members
                                 whose first name starts with 'A'
@@ -122,94 +122,3 @@
     </div>
 </form>
 
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script>
-
-        $(document).ready(function () {
-            $('#discountInfo').hide();
-        });
-
-        var initialDepententAddLenght = 1;
-        var maximunDependentAddLength = 15;
-        $('#add').click(function () {
-            if (initialDepententAddLenght < maximunDependentAddLength) {
-                initialDepententAddLenght++;
-                $('#dependents').append(`
-                       <div class="row">
-                               <div class="col-md-3">
-                                    <div class="form-group">
-                                        <input type="text" name="DependentFirstName[]" class="form-control form-control-sm" oninput="Calculation()">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <input type="text" name="DependentLastName[]" class="form-control form-control-sm">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <select class="custom-select custom-select-sm" name="DependentType[]">
-                                            <option value="">-Select One-</option>
-                                            <option value="1">Children</option>
-                                            <option value="2">Spouse</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            <div class="col-md-1">
-                                <button class="btn btn-sm btn-danger" type="button" id="remove">-</button>
-                            </div>
-                        </div>
-                        `);
-            }
-        });
-
-        //Once remove button is clicked
-        $('#dependents').on('click', '#remove', function (e) {
-            e.preventDefault();
-            $(this).parent().parent().remove();
-            Calculation();
-            initialDepententAddLenght--;
-        });
-
-
-        function Calculation() {
-            let amount = 1000;
-            let totalMembers = 1;
-            let discountMember = 0;
-
-            let firstName = $('#FirstName').val();
-
-            if (firstName.charAt(0).toUpperCase() === "A") {
-                discountMember++;
-                amount = (amount - ((amount * 10) / 100));
-            }
-
-            $("#dependents .row").each(function (i) {
-                totalMembers++;
-                var dependFirstName = $(this).find('.form-group:eq(0) input').val();
-                if (dependFirstName.length > 0) {
-                    if (dependFirstName.charAt(0).toUpperCase() === "A") {
-                        discountMember++;
-                        amount += (500 - ((500 * 10) / 100));
-                    } else {
-                        amount += 500;
-                    }
-                }
-            });
-
-            $('#payCheck').val((amount / 26).toFixed(2));
-            $('#yearlyCost').val(amount);
-            $('#discountMembers').text(discountMember);
-            $('#totalMembers').text(totalMembers);
-
-            if (discountMember > 0) {
-                $('#discountInfo').show();
-            } else {
-                $('#discountInfo').hide();
-            }
-        }
-    </script>
-}
