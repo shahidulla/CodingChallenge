@@ -2,12 +2,13 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using CodingChallenge.Data.Interfaces;
+using CodingChallenge.Entity;
 using Dapper;
-using SunIT.Entity;
 
 namespace CodingChallenge.Data
 {
-    public class EmployeeRepository
+    public class EmployeeRepository: IEmployeeRepository
     {
         public bool SaveEmployee(Employee employee)
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SunIT.Entity
+namespace CodingChallenge.Entity
 {
     public class Employee
     {

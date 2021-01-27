@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Linq;
 using CodingChallenge.Business;
+using CodingChallenge.Business.Interfaces;
+using CodingChallenge.Entity;
 using CodingChallenge.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using SunIT.Entity;
+using Microsoft.Extensions.Logging;
 
 namespace CodingChallenge.Web.Controllers
 {
     public class EmployeeController : Controller
     {
+        private readonly IEmployeeService _employeeService;
+        private readonly ILogger<EmployeeController> _logger;
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger)
+        {
+            _employeeService = employeeService;
+        }
 
         public IActionResult Create()
         {
@@ -23,38 +31,37 @@ namespace CodingChallenge.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    
-                        var employee = new Employee()
+                    var employee = new Employee()
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        CreatedDate = DateTime.UtcNow
+                    };
+
+                    for (int i = 0; i < model.DependentFirstName.Count(); i++)
+                    {
+                        employee.Dependents.Add(new Dependent()
                         {
-                            FirstName = model.FirstName,
-                            LastName = model.LastName,
+                            FirstName = model.DependentFirstName[i],
+                            LastName = model.DependentLastName[i],
+                            DependentType = model.DependentType[i],
                             CreatedDate = DateTime.UtcNow
-                        };
+                        });
+                    }
 
-                        for (int i = 0; i < model.DependentFirstName.Count(); i++)
-                        {
-                            employee.Dependents.Add(new Dependent()
-                            {
-                                FirstName = model.DependentFirstName[i],
-                                LastName = model.DependentLastName[i],
-                                DependentType = model.DependentType[i],
-                                CreatedDate = DateTime.UtcNow
-                            });
-                        }
-
-                        var empService = new EmployeeService();
-                        empService.SaveEmployeeInfo(employee);
-
-                        TempData["success_msg"] = "Employee has been saved!";
+                    var response = _employeeService.SaveEmployeeInfo(employee);
+                    if (response)
+                    {
                         return RedirectToAction(nameof(Create));
+                    }
                 }
-                return View(model);
             }
             catch (Exception ex)
             {
-
-                throw;
+                _logger.LogInformation(ex,"Failed to save employee info");
             }
+
+            return null;
         }
 
 

@@ -1,18 +1,23 @@
 ﻿using System;
 using CodingChallenge.Business.Interfaces;
 using CodingChallenge.Data;
-using SunIT.Entity;
+using CodingChallenge.Data.Interfaces;
+using CodingChallenge.Entity;
 
 namespace CodingChallenge.Business
 {
     public class EmployeeService: IEmployeeService
     {
+        private readonly IEmployeeRepository _employeeRepository;
+        public EmployeeService(IEmployeeRepository employeeRepository)
+        {
+            _employeeRepository = employeeRepository;
+        }
         public bool SaveEmployeeInfo(Employee employee)
         {
-            var empRepository = new EmployeeRepository();
             try
             {
-                return empRepository.SaveEmployee(employee);
+                return _employeeRepository.SaveEmployee(employee);
             }
             catch (Exception ex)
             {
