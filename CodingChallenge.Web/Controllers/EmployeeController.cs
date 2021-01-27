@@ -16,6 +16,7 @@ namespace CodingChallenge.Web.Controllers
         public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger)
         {
             _employeeService = employeeService;
+            _logger = logger;
         }
 
         public IActionResult Create()

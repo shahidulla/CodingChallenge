@@ -14,6 +14,7 @@ namespace CodingChallenge.Data
         {
             try
             {
+                //TODO need to DI the connection string or read it from appsettings.json
                 using (IDbConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=EmployeeBenefits;Integrated Security=True"))
                 {
                     string sqlQuery = "INSERT INTO [dbo].[Employee](FirstName, LastName, CreatedDate) OUTPUT INSERTED.[Id]";
